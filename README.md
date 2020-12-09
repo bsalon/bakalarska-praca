@@ -1,0 +1,2 @@
+# bakalarska-praca
+Vylepšenie BoolTestu
