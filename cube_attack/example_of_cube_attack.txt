@@ -1,0 +1,154 @@
+https://core.ac.uk/download/pdf/232136936.pdf section 4.7
+
+p(v0, v1, v2, x0, x1, x2), where v0,v1,v2 are the public inputs
+                                 x0,x1,x2 are the secret inputs
+
+p(v0, v1, v2, x0, x1, x2) = v0v1x0 + v0v1x1 + v2x0x2 + v1x2 + v0x0 + v0v1 + x0x2 + v1 + x2 + 1,
+                            this definition is considered unknown within the attack
+
+    term        const   linear
+    v0           X        
+    v1           X        
+    v2           X        
+    v0v1         X        
+    v0v2         O        
+    v1v2         O        
+    v0v1v2       O        
+
+
+===== PREPROCESSING|PRECOMPUTATION PHASE =====
+
+1. tI0 = v2, I0 = {2}
+   pI0(v0, v1, x0, x1, x2) = p(v0, v1, 0, x0, x1, x2) + p(v0, v1, 1, x0, x1, x2)
+   
+   -> we will always fix the public inputs not in the set of cube indices I to some constant (e.g.zero)
+   pI0(x0, x1, x2) = p(0, 0, 0, x0, x1, x2) + p(0, 0, 1, x0, x1, x2)
+
+   -> we test to see if pI0 is constant
+   pI0(0, 0, 0) = 0
+   pI0(1, 0, 1) = 1
+   -> since different inputs produce different results pI0 cannot be constant
+
+   -> we run linearity test
+   x = (1, 0, 1), y = (0, 1, 1), with x ⊕ y = (1, 1, 0)
+   pI0(0)       + pI0(x)       + pI0(y)       = pI0(x ⊕ y)
+   pI0(0, 0, 0) + pI0(1, 0, 1) + pI0(0, 1, 1) = pI0(1, 1, 0)
+   0            + 1            + 0            = 0
+   -> so the linearity test fails too, pI0 must be nonlinear
+
+
+2. tI1 = v0v2, I1 = {0, 2}
+
+   pI1(x0, x1, x2) = p(0, 0, 0, x0, x1, x2) + p(0, 0, 1, x0, x1, x2) +
+                     p(1, 0, 0, x0, x1, x2) + p(1, 0, 1, x0, x1, x2)
+
+   -> testing pI1, shows it to be constatn:
+   pI1(0, 0, 0) = 0
+   pI1(0, 0, 1) = 0
+   pI1(0, 1, 0) = 0
+   pI1(0, 1, 1) = 0
+   pI1(1, 0, 0) = 0
+   pI1(1, 0, 1) = 0
+   pI1(1, 1, 0) = 0
+   pI1(1, 1, 1) = 0
+   -> this indicates that the subterm tI1 does not exist in p
+
+
+3. tI2 = v0v1, I2 = {0, 1}
+
+   pI2(0, 0, 0) = 1
+   pI2(1, 0, 1) = 0
+   -> it proves to be non-constant
+
+   pI2(0)       + pI2(x)       + pI2(y)       = pI3(x ⊕ y)
+   pI2(0, 0, 0) + pI2(1, 0, 1) + pI2(0, 1, 1) = pI2(1, 1, 0)
+   1            + 0            + 0            = 1
+   -> it proves to be linear
+   -> normally, one would perform several linearity tests to make sure that tI2 really was a maxterm,
+      but for the sake of brevity, we will just show this one
+
+   -> now, we must deduce the superpoly pS(I2) that corresponds to tI2
+   -> first we compute the free term:
+   pI2(0, 0, 0) = 1
+   -> next we test for the presence of each secret variable:
+   pI2(1, 0, 0) = 0
+   pI2(0, 1, 0) = 0
+   pI2(0, 0, 1) = 1
+
+   -> since the value differs from the free term for variables x0 and x1, we now know pS(I2) to be:
+      pS(I2) = 1 + x0 + x1
+
+
+4. tI3 = v0, I = {0}
+
+   pI3(0, 0, 0) = 0
+   pI3(1, 0, 1) = 1 ?
+   -> it proves to be non-constant
+
+   pI3(0)       + pI3(x)       + pI3(y)       = pI3(x ⊕ y)
+   pI3(0, 0, 0) + pI3(1, 0, 1) + pI3(0, 1, 1) = pI3(1, 1, 0)
+   0            + 1            + 0            = 1
+   -> it proves to be linear
+
+   pI3(0, 0, 0) = 0
+   pI3(1, 0, 0) = 1
+   pI3(0, 1, 0) = 0
+   pI3(0, 0, 1) = 0
+
+   -> which gives us:
+      pS(I3) = x0
+
+   -> at first this might seem confusing, shouldn't pS(I3) = v1x0 + v1x1 + x0 + v1? - technically it is,
+      however, when we sum over the cube defined by I3 we set all public variables not in I3 (e.g. v1
+      and v2) to zero. Doing so results in:
+      pS(I3) = v1x0 + v1x1 + x0 + v1
+             => 0 * x0 + 0 * x0 + x0 + 0
+             = x0
+
+
+5. tI4 = v1, I = {1}
+
+   pI4(0, 0, 0) = 1
+   pI4(0, 0, 1) = 0
+   -> it proves to be non-constant
+
+   pI4(0)       + pI4(x)       + pI4(y)       = pI4(x ⊕ y)
+   pI4(0, 0, 0) + pI4(1, 0, 1) + pI4(0, 1, 1) = pI4(1, 1, 0)
+   0            + 0            + 0            = 0
+   -> it proves to be linear
+
+   pI4(0, 0, 0) = 1
+   pI4(1, 0, 0) = 1
+   pI4(0, 1, 0) = 1
+   pI4(0, 0, 1) = 0
+
+   -> which gives us:
+      pS(I4) = 1 + x2
+
+
+===== ONLINE PHASE =====
+
+superpoly polynomial pS(I)      cube indices I
+        x0                          {0}
+        1 + x0 + x1                 {0, 1}
+        1 + x2                      {1}
+
+Let there be some oracle g(v0, v1, v2) implemented as p(v0, v1, v2, x0, x1, x2) with hidden secret
+defined by x0 = 1, x1 = 0, x1 = 1. We will use out precomputed cube attack on p to discover this secret
+by querying the oracle g.
+
+To begin out attack, we must find the values of each superpoly. Recall that pS(I) = pI mod 2. This
+applies to the oracle g, so for one of our cube index sets I we can find the value of its superpoly
+gS(I) in the oracle by computing gI.
+
+            x0 = g{0}    = g(0, 0, 0) + g(1, 0, 0)                              = 1
+   1 + x0 + x1 = g{0, 1} = g(0, 0, 0) + g(1, 0, 0) + g(0, 1, 0) + g(1, 1, 0)    = 0
+        1 + x2 = g{1}    = g(0, 0, 0) + g(0, 1, 0)                              = 0
+  
+  This gives us a system of linear equations which we solve to find:
+            x0 = 1
+            x1 = 0
+            x2 = 1
+  This matches the values being hidden by the oracle g.
+  Therefore, the cube attack has completed successfully.
+
