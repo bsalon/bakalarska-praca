@@ -1,0 +1,86 @@
+APPROXIMATION
+
+- only abstract
+? only abstract, full text was not available
+X not what we wanted
+D interesting, but we can not use it
+O to read
+A could be useful article
+
+- https://arxiv.org/abs/1303.0726
+- https://people.eng.unimelb.edu.au/schachte/papers/sara07.pdf
+- http://www.sci.brooklyn.cuny.edu/~kletenik/publications/soda.pdf
+- https://core.ac.uk/download/pdf/82133419.pdf
+? https://ieeexplore.ieee.org/abstract/document/848892
+X http://web.eecs.umich.edu/~shiyy/mypapers/approx_cs.pdf
+    approximating a degree of boolean function
+- https://link.springer.com/chapter/10.1007/978-3-540-28629-5_17
+- https://holzman.technion.ac.il/files/2012/09/zorapprox.pdf
+X https://cseweb.ucsd.edu/~paturi/myPapers/pubs/Paturi_1992_stoc.pdf
+    approximating a degree of boolean function
+- https://dspace.mit.edu/bitstream/handle/1721.1/101635/CBMM-Memo-045.pdf?sequence=4
+O https://arxiv.org/pdf/1901.10576.pdf
+    something with biased inputs
+- https://www.researchgate.net/profile/Mario_Szegedy/publication/2508255_On_the_Degree_of_Boolean_Functions_as_Real_Polynomials/links/09e41514878e7ef890000000.pdf
+? https://www.researchgate.net/publication/224387607_Computing_Partial_Walsh_Transform_From_the_Algebraic_Normal_Form_of_a_Boolean_Function
+X https://www.paris.inria.fr/secret/Anne.Canteaut/poly.pdf page 17
+    not really about approximation
+O https://link.springer.com/article/10.1007/s10994-010-5179-6
+    polynomial regression
+- http://etd.lib.metu.edu.tr/upload/12615762/index.pdf
+- http://www.scielo.org.mx/pdf/cys/v12n3/v12n3a5.pdf
+- https://core.ac.uk/download/pdf/81120632.pdf
+- https://irafm.osu.cz/en/c42_0/
+- http://eprints-dev5.cs.univie.ac.at/5208/1/neuralnetworks98.pdf
+O https://www.cse.iitk.ac.in/users/rmittal/prev_course/f19/reports/9approx.pdf [-1,1 -> may be OK]
+    approximating a degree of boolean function
+X https://www.researchgate.net/publication/343321795_Quantum_algorithms_for_learning_the_algebraic_normal_form_of_quadratic_Boolean_functions
+    seems to be quadratic only
+- https://arxiv.org/abs/2005.05773 [DNF]
+- https://www.sciencedirect.com/science/article/abs/pii/0041555378901490 [DNF]
+- https://www.math.univ-paris13.fr/~carlet/chap-vectorial-fcts-corr.pdf [no approximation?]
+- http://mathpractices.edc.org/pdf/Creating_a_Polynomial_Function_to_Fit_a_Table.pdf [general basics]
+X https://www.math.univ-paris13.fr/~carlet/chap-fcts-Bool-corr.pdf [basics about boolean functions]
+    construction of specific boolean functions
+O https://core.ac.uk/download/pdf/35317526.pdf [something with ANF]
+    there is no approximation or something like that
+O https://eprint.iacr.org/2019/1446.pdf [creating specific functions]
+    something with annihilators ?, boolean functions with certain characteristics
+- https://www.researchgate.net/publication/228720083_Boolean_Functions_for_Cryptography_and_Error_Correcting_Codes [boolean functions for crypthography]
+- https://link.springer.com/referenceworkentry/10.1007%2F0-387-23483-7_40 [about boolean functions]
+X thesisAn_p.pdf Cryptographic properties of boolean functions and S-boxes [construction of small boolean functions]
+    some properties and creating new boolean functions
+D https://eprint.iacr.org/2012/587.pdf [ANF with key monomials]
+    seems really good, too specific and no explanation
+D https://www.researchgate.net/publication/308066449_Hacking_of_the_AES_with_Boolean_Functions [boolean functions in ANF from AES]
+    seems really good, it is again from the whole truth table
+O https://lucamariot.org/files/slides/talk_durham_2019.pdf [slide 13 and sources]
+    it is more about construction than reconstruction - but try to look at it
+? https://link.springer.com/chapter/10.1007/978-3-642-31662-3_7 [probably the whole function - big complexity]
+X http://www2.uaem.mx/r-mirror/web/packages/boolfun/vignettes/boolfun.pdf [some basics with algorithm for ANF]
+    just some basics
+- https://link.springer.com/article/10.1007/s00521-015-1887-y [encryption framework]
+- https://www.staff.uni-mainz.de/pommeren/Cryptology/Bitblock/Fourier/ANF.pdf [ANF and boolean functions]
+- https://blog.demofox.org/2016/04/09/turning-a-truth-table-into-a-digital-circuit-anf/ [just to ANF]
+- https://danel.ahman.ee/papers/mfps13.pdf [normalization ?]
+- https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.404.6338&rep=rep1&type=pdf [new normal forms]
+- http://www.mathematik.uni-muenchen.de/~karadais/nfappx.pdf [normal form of something]
+O https://eprint.iacr.org/2020/1048.pdf [by cube-attack guys]
+    look at it, is monomial there? -> recovered balanced superpoly
+A https://arxiv.org/pdf/2006.01023.pdf [Boolean network]
+    part 3 seems like the thing we want
+X http://www2.fiit.stuba.sk/~kvasnicka/Free%20books/Brown_Boolean%20Reasoning.pdf [a lot of things]
+    it is too much and I do not think it is what we want
+- http://www.cs.cmu.edu/~emc/15817-f08/ieeetc86.pdf [just a new manipulation]
+O https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.36.3523&rep=rep1&type=pdf [boolean network - some limits]
+    there are interesting examples
+
+
+Wikipedia and other:
+https://en.wikipedia.org/wiki/Binary_classification#Statistical_binary_classification
+https://en.wikipedia.org/wiki/Karnaugh_map
+https://en.wikipedia.org/wiki/Quine%E2%80%93McCluskey_algorithm
+https://en.wikipedia.org/wiki/Espresso_heuristic_logic_minimizer
+https://en.wikipedia.org/wiki/Logic_optimization#Circuit_minimization_in_Boolean_algebra
+https://en.wikipedia.org/wiki/Bernstein%E2%80%93Vazirani_algorithm
+https://math.stackexchange.com/questions/2927511/how-to-easily-create-a-polynomial-function-that-gives-a-desired-output
