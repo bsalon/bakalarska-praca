@@ -1,0 +1,146 @@
+It can be used to examine a function.
+Example:
+
+    def f(x):
+        v0 = x*0xe5 + 0xF7
+        v0 = v0&0xFF
+        v3 = (((((v0 * 0x26) + 0x55) & 0xFE) + (v0 * 0xED) + 0xD6) & 0xFF)
+        v4 = ((((((-(v3 * 0x2)) + 0xFF) & 0xFE) + v3) * 0x03) + 0x4D)
+        v5 = (((((v4 * 0x56) + 0x24) & 0x46) * 0x4B) + (v4 * 0xE7) + 0x76)
+        v7 = ((((v5 * 0x3A) + 0xAF) & 0xF4) + (v5 * 0x63) + 0x2E)
+        v6 = (v7 & 0x94)
+        v8 = ((((v6 + v6 + (-(v7 & 0xFF))) * 0x67) + 0xD))
+        res = ((v8 * 0x2D) + (((v8 * 0xAE) | 0x22) * 0xE5) + 0xC2) & 0xFF
+        return (0xed * (res - 0xF7)) & 0xff
+
+    from arybo.lib import MBA
+    mba = MBA(8)                # 8-bit MBA space and an accociated symbolic variable
+    x = mba.var('x')
+    print(x)                    # Vec([x0, x1, x2, x3, x4, x5, x6, x7])
+
+    ret = f(x)                  # symbolic boolean expressions associated with the function f
+    print(ret)                  # Vec([x0, x1, (x2 + 1), (x3 + 1), (x4 + 1), x5, (x6 + 1), x7])
+                                # What we see in the output above is basically the input X xored with 
+                                # the 8-bit constant (0 0 1 1 1 0 1 0) (with the LSB bit on the left)
+
+    # We can ask Arybo to find this constant for us thanks to:
+    app = ret.vectorial_decomp([x])
+    print(app)                  # App NL = Vec([0, 0, 0, 0, 0, 0, 0, 0])
+                                # AffApp matrix = Mat([
+                                # [1, 0, 0, 0, 0, 0, 0, 0]
+                                # [0, 1, 0, 0, 0, 0, 0, 0]
+                                # [0, 0, 1, 0, 0, 0, 0, 0]
+                                # [0, 0, 0, 1, 0, 0, 0, 0]
+                                # [0, 0, 0, 0, 1, 0, 0, 0]
+                                # [0, 0, 0, 0, 0, 1, 0, 0]
+                                # [0, 0, 0, 0, 0, 0, 1, 0]
+                                # [0, 0, 0, 0, 0, 0, 0, 1]
+                                # ])
+                                # AffApp cst = Vec([0, 0, 1, 1, 1, 0, 1, 0])
+    print(hex(app.cst().get_int_be()))  # 0x5c
+                                        # The vectorial decomposition confirms that this function is in
+                                        # the end simply a binary XOR of an 8-integer with the 0x5c
+                                        # constant
+
+It can be used to examine a Dirac function. It is a function that is always null in its domain expect
+for one value.
+Example:
+
+    def f(X):   # 64b input  ->  64b output
+        T = ((X+1)&(~X))
+        C = ((T | 0x7AFAFA697AFAFA69) & 0x80A061440A061440)\
+            + ((~T & 0x10401050504) | 0x1010104)
+        return C
+
+    from arybo.lib import MBA, boolean_expr_solve
+    mba = MBA(64)
+    x = mba.var('x')
+    print(f(x))     # Vec([0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 
+                    #      0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+                    #      0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, ((X0 * X1 * X2 * X3 * X4 * X5 * X6 * X7 * X8
+                    #      * X9 * X10 * X11 * X12 * X13 * X14 * X15 * X16 * X17 * X18 * X19 * X20 * X21 
+                    #      * X22 * X23 * X24 * X25 * X26 * X27 * X28 * X29 * X30 * X31 * X32 * X33 * X34
+                    #      * X35 * X36 * X37 * X38 * X39 * X40 * X41 * X42 * X43 * X44 * X45 * X46 * X47
+                    #      * X48 * X49 * X50 * X51 * X52 * X53 * X54 * X55 * X56 * X57 * X58 * X59 * X60
+                    #      * X61 * X62) + (X0 * X1 * X2 * X3 * X4 * X5 * X6 * X7 * X8 * X9 * X10 * X11 *
+                    #      X12 * X13 * X14 * X15 * X16 * X17 * X18 * X19 * X20 * X21 * X22 * X23 * X24 *
+                    #      X25 * X26 * X27 * X28 * X29 * X30 * X31 * X32 * X33 * X34 * X35 * X36 * X37 *
+                    #      X38 * X39 * X40 * X41 * X42 * X43 * X44 * X45 * X46 * X47 * X48 * X49 * X50 *
+                    #      X51 * X52 * X53 * X54 * X55 * X56 * X57 * X58 * X59 * X60 * X61 * X62 * X63))
+    
+    # We can use the boolean expression solver to figure out which values would make this boolean
+    # expression true:
+    r = f(x)
+    print(boolean_expr_solve(r[63], x, 1))      # [Vec([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                                # 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                                # 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                                # 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0])]
+    # We see that only one value makes this last boolean expression true. Let's convert it to an integer
+    # and test the final result:
+    C0 = sols[0].get_int_be()
+    print(hex(C0))                  # 0x7fffffffffffffff
+    print(hex(f(0)))                # 0xa061440b071544
+    print(hex(f(C0)))               # 0x80a061440b071544
+
+
+EXPR __op__ MBA.Variable
+# todo: how to make it just for x[0] = (x & 0x1) & e
+# todo: same but keep other x[1], x[2], ... =  ((x & 0x1) & e) | (x & 0xe)
+
+   random_polynoms = []
+    for i in range(BITS_NUMBER):
+        random_polynoms.append(random_polynom(seed, x))
+        seed += 1
+
+    x = x | 0xF # FIXME
+
+    for i in range(BITS_NUMBER):
+        bit = 0x1 << i
+        x = ((x & bit) & random_polynoms[i]) | (x & ~bit)
+
+
+RESULTS
+x   x + 1                   x + 2               x + 3                                           x + 4
+x0  (x0 + 1),               x0,                 (x0 + 1)                                        x0
+x1  (x0 + x1),              (x1 + 1)            (x0 + x1 + 1)                                   x1
+x2  ((x0 * x1) + x2),       (x1 + x2)           ((x0 * x1) + x0 + x1 + x2)                      (x2 + 1)
+x3  ((x0 * x1 * x2) + x3)   ((x1 * x2) + x3)    ((x0 * x2) + (x1 * x2) + (x0 * x1 * x2) + x3)   (x2 + x3)
+
+
+x   x + x   x + x + x                                           4 x     5 x
+x0  0       x0                                                  0       x0
+x1  x0      (x0 + x1)                                           0       x1
+x2  x1      ((x0 * x1) + x1 + x2)                               x0      (x0 + x2)
+x3  x2      ((x0 * x1) + (x1 * x2) + (x0 * x1 * x2) + x2 + x2)  x1      ((x0 * x2) + x1 + x3)
+
+
+x   x - 1
+x0  (x0 + 1)
+x1  (x0 + x1 + 1)
+x2  ((x0 * x1) + x0 + x1 + x2 + 1)
+x3  ((x0 * x1) + (x0 * x2) + (x1 * x2) + (x0 * x1 * x2) + x0 + x1 + x2 + x3 + 1)
+
+    x - 2                               x - 3
+    x0                                  (x0 + 1)
+    (x1 + 1)                            (x0 + x1)
+    (x1 + x2 + 1)                       ((x0 * x1) + x2 + 1)
+    ((x1 * x2) + x1 + x2 + x3 + 1)      ((x0 * x1) + (x0 * x1 * x2) + x2 + x3 + 1)
+
+    x - 4           x - 5
+    x0              (x0 + 1)
+    x1              (x0 + x1 + 1)
+    (x2 + 1)        ((x0 * x1) + x0 + x1 + x2)
+    (x2 + x3 + 1)   ((x0 * x2) + (x1 * x2) + (x0 * x1 * x2) + x3 + 1)
+
+
+x   x - x   x - x - x
+x0  0       x0
+x1  0       (x0 + x1)
+x2  0       ((x0 * x1) + x0 + x1 + x2)
+x3  0       ((x0 * x1) + (x0 * x2) + (x1 * x2) + (x0 * x1 * x2) + x0 + x1 + x2 + x3)
+
+    x - x - x - x                   x - x - x - x - x
+    0                               x0
+    x0                              x1
+    (x0 + x1)                       (x0 + x2)
+    ((x0 * x1) + x0 + x1 + x2)      ((x0 * x2) + x0 + x1 + x3)
