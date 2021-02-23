@@ -96,8 +96,8 @@ if __name__ == "__main__":
         size = int(sys.argv[1])
         seed = int(sys.argv[2])
 
-        function = random_function.RandomFunction(size, seed)
-        print(function.x)
+        function = random_function.RandomFunction(size, size, seed)
+        print(function.x, end="\n\n")
 
         indices = list(range(2 ** size))
         print("The indices: ", end="")
